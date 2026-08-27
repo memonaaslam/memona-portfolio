@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memona Aslam — Digital Marketer, Designer & Canva Educator</title>
+  <meta name="description" content="Memona Aslam — Digital Marketer, Creative Designer, UI/UX Specialist & Canva Educator. Premium brands, digital experiences & marketing that drive results worldwide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --bg: #050508;
+      --bg-elevated: #0c0c12;
+      --bg-card: rgba(18, 18, 28, 0.75);
+      --gold: #d4af37;
+      --gold-soft: #e8c97a;
+      --gold-dim: rgba(212, 175, 55, 0.15);
+      --purple: #8b5cf6;
+      --purple-soft: #a78bfa;
+      --teal: #2dd4bf;
+      --text: #f5f5f7;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-gold: rgba(212, 175, 55, 0.25);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Canvas 3D background */
+    #canvas3d {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .content { position: relative; z-index: 1; }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(5, 5, 8, 0.7);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    nav.scrolled { padding: 0.9rem 2rem; background: rgba(5, 5, 8, 0.92); }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      color: #0a0a0f !important;
+      padding: 0.55rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      text-transform: none !important;
+      letter-spacing: 0 !important;
+    }
+    .nav-cta:hover { filter: brightness(1.1); color: #0a0a0f !important; }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 1.5rem 4rem;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-soft);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+      opacity: 0;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 500;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+    }
+    .hero h1 .line { display: block; }
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft), var(--purple-soft));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+      opacity: 0;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem 2.5rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+    }
+    .hero-meta span {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .hero-meta strong { color: var(--text); font-weight: 500; }
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      opacity: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.75rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      color: #0a0a0f;
+      box-shadow: 0 4px 24px rgba(212, 175, 55, 0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.45);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    /* Stats bar */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: 900px;
+      margin: 4rem auto 0;
+      padding: 0 1.5rem;
+      opacity: 0;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-4px);
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.35rem;
+    }
+
+    /* Sections common */
+    section {
+      padding: 6rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      opacity: 0;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--gold-soft);
+    }
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+      opacity: 0;
+    }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      font-weight: 300;
+      opacity: 0;
+    }
+    .about-highlights {
+      display: grid;
+      gap: 1rem;
+      opacity: 0;
+    }
+    .highlight-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s;
+    }
+    .highlight-item:hover { border-color: var(--border-gold); }
+    .highlight-icon {
+      width: 42px; height: 42px;
+      background: var(--gold-dim);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .highlight-item h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .highlight-item p {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin: 0;
+    }
+
+    /* Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .service-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--gold-dim);
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .service-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .service-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 300;
+      margin-bottom: 1.25rem;
+    }
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text-dim);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+    .skill-group h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+    .skill-item {
+      margin-bottom: 1.25rem;
+      opacity: 0;
+    }
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .skill-header span:last-child { color: var(--gold); font-weight: 500; }
+    .skill-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--purple));
+      border-radius: 3px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Tools marquee */
+    .tools-section { padding-top: 2rem; padding-bottom: 2rem; overflow: hidden; }
+    .marquee-wrap {
+      display: flex;
+      gap: 1rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    .marquee-wrap:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .tool-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      color: var(--text-muted);
+    }
+    .tool-chip strong { color: var(--text); font-weight: 500; }
+
+    /* Experience */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), var(--purple), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.4rem;
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      transform: translateX(-5px);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+    }
+    .timeline-period {
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+    .timeline-item h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .timeline-company {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .timeline-item ul {
+      list-style: none;
+      padding: 0;
+    }
+    .timeline-item li {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      padding-left: 1.1rem;
+      position: relative;
+      margin-bottom: 0.4rem;
+      font-weight: 300;
+    }
+    .timeline-item li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      backdrop-filter: blur(12px);
+      transition: all 0.35s;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-5px);
+    }
+    .project-tag {
+      font-size: 0.7rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+    .project-card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .project-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    /* Course */
+    .course-section {
+      background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.03), transparent);
+    }
+    .course-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      backdrop-filter: blur(16px);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 2.5rem;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .course-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      color: #0a0a0f;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.04em;
+    }
+    .course-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .course-card h3 em { font-style: italic; color: var(--gold-soft); }
+    .course-card > div > p {
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+    }
+    .course-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .course-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .meta-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+    .meta-box .val {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .meta-box .lab {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.2rem;
+    }
+    .curriculum {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .curr-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .curr-week {
+      font-size: 0.7rem;
+      color: var(--gold);
+      font-weight: 600;
+      white-space: nowrap;
+      min-width: 55px;
+    }
+    .curr-item h5 { font-size: 0.9rem; margin-bottom: 0.15rem; }
+    .curr-item p { font-size: 0.8rem; color: var(--text-dim); margin: 0; }
+
+    /* Education */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .edu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s;
+      opacity: 0;
+    }
+    .edu-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-4px);
+    }
+    .edu-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .edu-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .edu-card p { font-size: 0.8rem; color: var(--text-dim); }
+
+    /* Contact */
+    .contact-section {
+      text-align: center;
+      padding-bottom: 4rem;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 2.5rem 0 3rem;
+    }
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      opacity: 0;
+    }
+    .contact-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-4px);
+      background: rgba(212, 175, 55, 0.05);
+    }
+    .contact-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .contact-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .contact-card p { font-size: 0.8rem; color: var(--text-dim); }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .about-grid, .skills-grid, .course-card { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .menu-toggle { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(5,5,8,0.98);
+        padding: 1.5rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      section { padding: 4rem 1.25rem; }
+      .course-meta { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas3d"></canvas>
+  <div class="content">
+    <!-- Nav -->
+    <nav id="nav">
+      <a href="#top" class="logo">MEMONA <span>.</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#course">Course</a></li>
+        <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" id="top">
+      <div class="hero-badge">Available for Remote Work</div>
+      <h1>
+        <span class="line">Creative</span>
+        <span class="line"><em>thinking.</em></span>
+        <span class="line">Real impact.</span>
+      </h1>
+      <p class="hero-sub">I'm Memona Aslam — a multidisciplinary designer & digital strategist creating premium brands, intuitive digital experiences and marketing that helps businesses move forward worldwide.</p>
+      <div class="hero-meta">
+        <span><strong>Based in</strong> Pakistan</span>
+        <span><strong>Working</strong> Worldwide</span>
+        <span><strong>Focus</strong> Design · Web · Marketing · AI</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-primary">Get in Touch →</a>
+        <a href="#course" class="btn btn-secondary">Join Canva Course</a>
+      </div>
+      <div class="stats" id="stats">
+        <div class="stat-card">
+          <div class="stat-value" data-target="3">0</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-target="95">0</div>
+          <div class="stat-label">Satisfaction %</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-target="6">0</div>
+          <div class="stat-label">Certifications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" data-target="2">0</div>
+          <div class="stat-label">Countries Served</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- About -->
+    <section id="about">
+      <p class="section-label">01 — About</p>
+      <h2 class="section-title">Design that looks refined and<br>works with <em>purpose.</em></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I'm Memona Aslam, a Digital Marketer and Graphic Designer with expertise in Web Design, UI/UX, and emerging skills in Software Development and AI Agents & Chatbot Development. I bring creative vision and data-driven thinking to every project.</p>
+          <p>With remote experience for international clients in the UAE and USA, I understand how to deliver results across industries. I also teach Canva and Digital Marketing — running online batches of 5 students for the past year, helping beginners build real skills and earn from home.</p>
+          <p>I combine visual craft, business thinking and modern digital tools to create work that is not only beautiful, but clear, usable and commercially meaningful.</p>
+        </div>
+        <div class="about-highlights">
+          <div class="highlight-item">
+            <div class="highlight-icon">🎯</div>
+            <div>
+              <h4>360° Creative Perspective</h4>
+              <p>Branding, digital design, websites & marketing — consistent from first impression to conversion.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">🌍</div>
+            <div>
+              <h4>Global Remote Experience</h4>
+              <p>Delivered results for clients across UAE, USA and Pakistan with reliable collaboration.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">📚</div>
+            <div>
+              <h4>Educator & Mentor</h4>
+              <p>Teaching Canva & Digital Marketing online, helping beginners earn from home.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services">
+      <p class="section-label">02 — Services</p>
+      <h2 class="section-title">Creative capabilities built<br>around modern <em>brands.</em></h2>
+      <p class="section-desc">From a single campaign to a complete digital identity, every project is approached with clarity, consistency and attention to detail.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-num">01</div>
+          <h3>Graphic & Brand Design</h3>
+          <p>Visual identities, social media content, campaign artwork, presentations, brochures, company profiles, print materials and polished brand systems.</p>
+          <div class="service-tags">
+            <span class="tag">Logo Design</span>
+            <span class="tag">Canva</span>
+            <span class="tag">Branding</span>
+            <span class="tag">Print</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">02</div>
+          <h3>UI/UX & Product Design</h3>
+          <p>Responsive interfaces, dashboards, landing pages, mobile experiences, wireframes and design systems focused on usability and premium presentation.</p>
+          <div class="service-tags">
+            <span class="tag">Figma</span>
+            <span class="tag">Adobe XD</span>
+            <span class="tag">Prototyping</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">03</div>
+          <h3>Website Design</h3>
+          <p>Strategic websites using WordPress, Elementor, Divi, Kadence and front-end technologies — structured for clarity, responsiveness and conversion.</p>
+          <div class="service-tags">
+            <span class="tag">WordPress</span>
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Wix</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">04</div>
+          <h3>Digital Marketing</h3>
+          <p>Social media strategy, creative campaigns, content direction, email marketing, SEO/SEM fundamentals and performance-minded digital communication.</p>
+          <div class="service-tags">
+            <span class="tag">SEO/SEM</span>
+            <span class="tag">Social Media</span>
+            <span class="tag">Email</span>
+            <span class="tag">Analytics</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">05</div>
+          <h3>Software & AI Agents</h3>
+          <p>Chatbots, AI automation workflows and software development support — bringing intelligent systems into modern brand experiences.</p>
+          <div class="service-tags">
+            <span class="tag">Chatbots</span>
+            <span class="tag">AI Automation</span>
+            <span class="tag">Software Dev</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">06</div>
+          <h3>Online Teaching</h3>
+          <p>Structured Canva & Digital Marketing courses for beginners — practical skills, freelancing guidance and real earning potential from home.</p>
+          <div class="service-tags">
+            <span class="tag">Canva</span>
+            <span class="tag">Marketing</span>
+            <span class="tag">Freelancing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools Marquee -->
+    <div class="tools-section">
+      <div class="marquee-wrap">
+        <span class="tool-chip"><strong>PS</strong> Photoshop</span>
+        <span class="tool-chip"><strong>AI</strong> Illustrator</span>
+        <span class="tool-chip"><strong>ID</strong> InDesign</span>
+        <span class="tool-chip"><strong>CA</strong> Canva Pro</span>
+        <span class="tool-chip"><strong>FG</strong> Figma</span>
+        <span class="tool-chip"><strong>XD</strong> Adobe XD</span>
+        <span class="tool-chip"><strong>WP</strong> WordPress</span>
+        <span class="tool-chip"><strong>EL</strong> Elementor</span>
+        <span class="tool-chip"><strong>GA</strong> Google Analytics</span>
+        <span class="tool-chip"><strong>MB</strong> Meta Business</span>
+        <span class="tool-chip"><strong>GPT</strong> ChatGPT</span>
+        <span class="tool-chip"><strong>AF</strong> Adobe Firefly</span>
+        <span class="tool-chip"><strong>HC</strong> HTML / CSS</span>
+        <span class="tool-chip"><strong>PR</strong> Prototyping</span>
+        <!-- Duplicate for seamless loop -->
+        <span class="tool-chip"><strong>PS</strong> Photoshop</span>
+        <span class="tool-chip"><strong>AI</strong> Illustrator</span>
+        <span class="tool-chip"><strong>ID</strong> InDesign</span>
+        <span class="tool-chip"><strong>CA</strong> Canva Pro</span>
+        <span class="tool-chip"><strong>FG</strong> Figma</span>
+        <span class="tool-chip"><strong>XD</strong> Adobe XD</span>
+        <span class="tool-chip"><strong>WP</strong> WordPress</span>
+        <span class="tool-chip"><strong>EL</strong> Elementor</span>
+        <span class="tool-chip"><strong>GA</strong> Google Analytics</span>
+        <span class="tool-chip"><strong>MB</strong> Meta Business</span>
+        <span class="tool-chip"><strong>GPT</strong> ChatGPT</span>
+        <span class="tool-chip"><strong>AF</strong> Adobe Firefly</span>
+        <span class="tool-chip"><strong>HC</strong> HTML / CSS</span>
+        <span class="tool-chip"><strong>PR</strong> Prototyping</span>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <section id="skills">
+      <p class="section-label">03 — Skills</p>
+      <h2 class="section-title">Skills that deliver <em>results.</em></h2>
+      <div class="skills-grid">
+        <div>
+          <h3 class="skill-group-title">Marketing & Strategy</h3>
+          <div class="skill-item" data-pct="92"><div class="skill-header"><span>SEO & SEM</span><span>92%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="90"><div class="skill-header"><span>Social Media Strategy</span><span>90%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="88"><div class="skill-header"><span>Content Marketing</span><span>88%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="87"><div class="skill-header"><span>Email Marketing</span><span>87%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="85"><div class="skill-header"><span>Analytics & Reporting</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+        </div>
+        <div>
+          <h3 class="skill-group-title">Design & Development</h3>
+          <div class="skill-item" data-pct="94"><div class="skill-header"><span>Graphic Design (Canva/Adobe)</span><span>94%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="91"><div class="skill-header"><span>Brand Identity Development</span><span>91%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="88"><div class="skill-header"><span>UI/UX — Figma & Adobe XD</span><span>88%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="85"><div class="skill-header"><span>Web Design (WordPress/Wix)</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="80"><div class="skill-header"><span>AI Agents & Chatbots</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+          <div class="skill-item" data-pct="78"><div class="skill-header"><span>HTML / CSS</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill"></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+      <p class="section-label">04 — Experience</p>
+      <h2 class="section-title">Where I've made an <em>impact.</em></h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-period">Current · UAE (Remote)</div>
+          <h3>Digital Marketer & Graphic Designer</h3>
+          <div class="timeline-company">The Vogue Interiors & Fitouts</div>
+          <ul>
+            <li>Executing SEO, SEM, social media & email campaigns that grow brand reach</li>
+            <li>Creating print & digital content: brochures, ads, social assets, web banners</li>
+            <li>Analyzing performance with Google Analytics and delivering clear reports</li>
+            <li>Designing responsive web pages aligned with brand goals & UI best practices</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">Independent</div>
+          <h3>UI/UX, Web & Brand Designer</h3>
+          <div class="timeline-company">Freelance Projects</div>
+          <ul>
+            <li>Designing brand systems, websites, landing pages & software interfaces</li>
+            <li>Work across technology, wellness, interiors, services and education</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">Previous · USA (Remote)</div>
+          <h3>CSR & Freelance Consultant</h3>
+          <div class="timeline-company">Spiral Bridge Solutions</div>
+          <ul>
+            <li>Multi-channel customer support achieving 95% satisfaction rate</li>
+            <li>Developed training materials that enhanced team performance</li>
+            <li>Freelance consulting to small businesses on service improvement</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-period">1 Year · Online</div>
+          <h3>Canva & Digital Marketing Tutor</h3>
+          <div class="timeline-company">Self — Online Teaching</div>
+          <ul>
+            <li>Taught structured online batches of 5 students each</li>
+            <li>Hands-on curriculum covering design, branding & social media strategy</li>
+            <li>Mentored students to apply skills to real freelance & business projects</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <p class="section-label">05 — Selected Work</p>
+      <h2 class="section-title">Projects across design, software<br>& digital <em>experiences.</em></h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-tag">Brand · Website · Digital</div>
+          <h3>Makzora</h3>
+          <p>Luxury technology, automation and creative services brand.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-tag">UI/UX · SaaS</div>
+          <h3>ClientPilot AI</h3>
+          <p>AI-powered CRM and meeting intelligence platform.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-tag">Web · Brand Direction</div>
+          <h3>Sunora</h3>
+          <p>Premium wellness lighting digital experience.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-tag">Branding · Campaigns · Web</div>
+          <h3>The Vogue Interiors Group</h3>
+          <p>Luxury interior design and fit-out communication.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course -->
+    <section id="course" class="course-section">
+      <p class="section-label">06 — Online Course</p>
+      <h2 class="section-title">Canva + Digital Marketing <em>Course</em></h2>
+      <p class="section-desc">A complete 2-month online course — designed for beginners in Pakistan who want to learn real skills and earn from home.</p>
+      <div class="course-card">
+        <div>
+          <span class="course-badge">Admissions Open</span>
+          <h3>Seekho. Banao. <em>Kamaao.</em></h3>
+          <p>From complete beginner to professional designer and digital marketer in 8 weeks. Learn Canva, social media marketing, content strategy, paid ads, and freelancing — all online via Zoom.</p>
+          <div class="course-features">
+            <span class="tag">Canva Design</span>
+            <span class="tag">Social Media</span>
+            <span class="tag">Content Strategy</span>
+            <span class="tag">Facebook Ads</span>
+            <span class="tag">Freelancing</span>
+            <span class="tag">Certificate</span>
+          </div>
+          <div class="course-meta">
+            <div class="meta-box"><div class="val">Rs 5,000</div><div class="lab">Per Month</div></div>
+            <div class="meta-box"><div class="val">3</div><div class="lab">Classes / Week</div></div>
+            <div class="meta-box"><div class="val">2</div><div class="lab">Months</div></div>
+            <div class="meta-box"><div class="val">Zoom</div><div class="lab">Platform</div></div>
+          </div>
+          <a href="https://wa.me/923006353343?text=Hi%20Memona!%20I%20want%20to%20join%20your%20Canva%20course." class="btn btn-primary" style="margin-top:1.5rem;" target="_blank" rel="noopener">Enroll Now — WhatsApp →</a>
+        </div>
+        <div class="curriculum">
+          <div class="curr-item">
+            <div class="curr-week">Week 1–2</div>
+            <div>
+              <h5>Canva & Design Basics</h5>
+              <p>Canvas sizes · Fonts · Colours · Spacing · First Instagram post</p>
+            </div>
+          </div>
+          <div class="curr-item">
+            <div class="curr-week">Week 3–4</div>
+            <div>
+              <h5>Brand & Content Strategy</h5>
+              <p>Brand kit · Flyers · Posters · Content calendar · Hashtags</p>
+            </div>
+          </div>
+          <div class="curr-item">
+            <div class="curr-week">Week 5–6</div>
+            <div>
+              <h5>Social Media & Paid Ads</h5>
+              <p>Instagram algorithm · Facebook marketing · Boost Post · Reels</p>
+            </div>
+          </div>
+          <div class="curr-item">
+            <div class="curr-week">Week 7–8</div>
+            <div>
+              <h5>Freelancing & Graduation</h5>
+              <p>Finding clients · Fiverr · Pricing · Portfolio · Certificate</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section id="education">
+      <p class="section-label">07 — Education & Certifications</p>
+      <h2 class="section-title">Credentials that <em>matter.</em></h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <h4>Digital Marketing Expert</h4>
+          <p>Future Wise · UAE</p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">🎨</div>
+          <h4>Graphic Design & Freelancing</h4>
+          <p>DigiSkills · Pakistan</p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">🖥️</div>
+          <h4>UI/UX Design</h4>
+          <p>Udemy</p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">🤖</div>
+          <h4>1 Million Prompters</h4>
+          <p>Dubai · UAE</p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">📚</div>
+          <h4>Intermediate (HSC)</h4>
+          <p>Allama Iqbal College</p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">📖</div>
+          <h4>Matriculation (SSC)</h4>
+          <p>Alizium Public School</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+      <p class="section-label">08 — Get In Touch</p>
+      <h2 class="section-title">Let's build something <em>remarkable.</em></h2>
+      <p class="section-desc" style="margin-left:auto;margin-right:auto;">Ready to elevate your brand, collaborate remotely, or join the course? I'm here to make it happen.</p>
+      <div class="contact-grid">
+        <a href="mailto:memonaaslam00@gmail.com" class="contact-card">
+          <div class="icon">✉️</div>
+          <h4>Email</h4>
+          <p>memonaaslam00@gmail.com</p>
+        </a>
+        <a href="https://wa.me/923006353343" class="contact-card" target="_blank" rel="noopener">
+          <div class="icon">📱</div>
+          <h4>WhatsApp</h4>
+          <p>0300-6353343</p>
+        </a>
+        <a href="https://www.instagram.com/memonaaslamofficial" class="contact-card" target="_blank" rel="noopener">
+          <div class="icon">📸</div>
+          <h4>Instagram</h4>
+          <p>@memonaaslamofficial</p>
+        </a>
+        <a href="https://www.linkedin.com/in/memona-aslam/" class="contact-card" target="_blank" rel="noopener">
+          <div class="icon">💼</div>
+          <h4>LinkedIn</h4>
+          <p>memona-aslam</p>
+        </a>
+        <div class="contact-card" style="cursor:default;">
+          <div class="icon">📍</div>
+          <h4>Location</h4>
+          <p>Pakistan · Remote Worldwide</p>
+        </div>
+        <div class="contact-card" style="cursor:default;">
+          <div class="icon">🌐</div>
+          <h4>Languages</h4>
+          <p>English · Urdu</p>
+        </div>
+      </div>
+      <a href="https://wa.me/923006353343" class="btn btn-primary" target="_blank" rel="noopener">Chat on WhatsApp →</a>
+    </section>
+
+    <footer>
+      <p>© 2026 Memona Aslam. Designed with intention. <a href="mailto:memonaaslam00@gmail.com">Get in touch</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // ========== 3D Background ==========
+    const canvas = document.getElementById('canvas3d');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    // Particles
+    const particleCount = 800;
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const gold = new THREE.Color(0xd4af37);
+    const purple = new THREE.Color(0x8b5cf6);
+    const teal = new THREE.Color(0x2dd4bf);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 60;
+      const c = Math.random() > 0.6 ? gold : (Math.random() > 0.5 ? purple : teal);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.12,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.7,
+      sizeAttenuation: true
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Floating geometric shapes
+    const shapes = [];
+    const shapeGeo = [
+      new THREE.IcosahedronGeometry(1.2, 0),
+      new THREE.OctahedronGeometry(1, 0),
+      new THREE.TetrahedronGeometry(1.1, 0)
+    ];
+    const shapeMat = new THREE.MeshBasicMaterial({
+      color: 0xd4af37,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.15
+    });
+
+    for (let i = 0; i < 6; i++) {
+      const mesh = new THREE.Mesh(shapeGeo[i % 3], shapeMat.clone());
+      mesh.material.color.set(i % 2 === 0 ? 0xd4af37 : 0x8b5cf6);
+      mesh.position.set(
+        (Math.random() - 0.5) * 40,
+        (Math.random() - 0.5) * 30,
+        (Math.random() - 0.5) * 20 - 10
+      );
+      mesh.userData = {
+        rotSpeed: { x: (Math.random() - 0.5) * 0.01, y: (Math.random() - 0.5) * 0.01 },
+        floatSpeed: 0.3 + Math.random() * 0.4,
+        floatOffset: Math.random() * Math.PI * 2
+      };
+      scene.add(mesh);
+      shapes.push(mesh);
+    }
+
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function animate3d() {
+      requestAnimationFrame(animate3d);
+      const t = Date.now() * 0.0003;
+      particles.rotation.y = t * 0.3;
+      particles.rotation.x = Math.sin(t * 0.5) * 0.1;
+      shapes.forEach((s, i) => {
+        s.rotation.x += s.userData.rotSpeed.x;
+        s.rotation.y += s.userData.rotSpeed.y;
+        s.position.y += Math.sin(t * s.userData.floatSpeed + s.userData.floatOffset) * 0.01;
+      });
+      camera.position.x += (mouseX * 3 - camera.position.x) * 0.03;
+      camera.position.y += (-mouseY * 2 - camera.position.y) * 0.03;
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+    }
+    animate3d();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ========== GSAP Animations ==========
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero entrance
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+      .to('.hero-badge', { opacity: 1, y: 0, duration: 0.8, delay: 0.2 })
+      .to('.hero h1', { opacity: 1, y: 0, duration: 1 }, '-=0.4')
+      .to('.hero-sub', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+      .to('.hero-meta', { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
+      .to('.hero-ctas', { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
+      .to('.stats', { opacity: 1, y: 0, duration: 0.8 }, '-=0.3');
+
+    // Counter animation
+    function animateCounters() {
+      document.querySelectorAll('.stat-value').forEach(el => {
+        const target = +el.dataset.target;
+        gsap.to({ val: 0 }, {
+          val: target,
+          duration: 2,
+          ease: 'power2.out',
+          onUpdate: function() {
+            el.textContent = Math.round(this.targets()[0].val) + (target === 95 ? '' : '');
+          }
+        });
+      });
+    }
+    ScrollTrigger.create({
+      trigger: '#stats',
+      start: 'top 80%',
+      onEnter: animateCounters,
+      once: true
+    });
+
+    // Section reveals
+    gsap.utils.toArray('.section-label, .section-title, .section-desc').forEach(el => {
+      gsap.fromTo(el, { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+
+    gsap.utils.toArray('.about-text p, .about-highlights').forEach(el => {
+      gsap.fromTo(el, { opacity: 0, y: 25 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 90%' }
+      });
+    });
+
+    gsap.utils.toArray('.service-card').forEach((card, i) => {
+      gsap.fromTo(card, { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 0.7, delay: i * 0.08, ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 92%' }
+      });
+    });
+
+    // Skills bars
+    gsap.utils.toArray('.skill-item').forEach(item => {
+      const fill = item.querySelector('.skill-fill');
+      const pct = item.dataset.pct;
+      gsap.fromTo(item, { opacity: 0, x: -20 }, {
+        opacity: 1, x: 0, duration: 0.6,
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 90%',
+          onEnter: () => { fill.style.width = pct + '%'; }
+        }
+      });
+    });
+    gsap.utils.toArray('.skill-group-title').forEach(el => {
+      gsap.fromTo(el, { opacity: 0 }, {
+        opacity: 1, duration: 0.6,
+        scrollTrigger: { trigger: el, start: 'top 90%' }
+      });
+    });
+
+    gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+      gsap.fromTo(item, { opacity: 0, x: -30 }, {
+        opacity: 1, x: 0, duration: 0.7, delay: i * 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: item, start: 'top 90%' }
+      });
+    });
+
+    gsap.utils.toArray('.project-card, .edu-card, .contact-card, .course-card').forEach((card, i) => {
+      gsap.fromTo(card, { opacity: 0, y: 35 }, {
+        opacity: 1, y: 0, duration: 0.7, delay: (i % 4) * 0.08, ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 92%' }
+      });
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Mobile menu
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+  </script>
+</body>
+</html>

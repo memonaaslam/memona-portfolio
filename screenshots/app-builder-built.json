@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Memona Aslam — Digital Marketer, Designer & Educator",
+      "hasCanvas": true,
+      "bodyTextLen": 6241,
+      "bodyTextHash": "1d0709c5245bce5e545cec39cbd7f67653a8ae4b88521b1ce13cc76c8cab5c32",
+      "bodyTextPrefix": "MEMONA . ABOUT SERVICES SKILLS EXPERIENCE COURSE Let's Talk Avai",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Memona Aslam — Digital Marketer, Designer & Educator",
+      "hasCanvas": true,
+      "bodyTextLen": 6191,
+      "bodyTextHash": "33e00caf678c52de532d9aac22a672ade17045b1391e7b7d71b5e9343fdd9d27",
+      "bodyTextPrefix": "MEMONA . Available for remote work Creative thinking. Real impac",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [
+    "BRAND WARNING: this looks like a game/canvas app but src/lib/og/site.json is missing \"type\": \"x:game\". X uses og:type=x:game to present the unfurl as a game card — set it in /workspace/src/lib/og/site.json per /workspace/.grok/skills/og/SKILL.md. Do not invent x:type or overload twitter:card as the game signal.",
+    "BRAND WARNING: this looks like a game/canvas app but /workspace/public/x-banner.jpg is missing. Games need a 50:11 X feed card (1200×264 JPEG) at public/x-banner.jpg — open /workspace/.grok/skills/og/SKILL.md and finish the brand-asset pass."
+  ],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}
